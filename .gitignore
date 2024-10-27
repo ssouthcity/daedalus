@@ -1,0 +1,6 @@
+# compiled code
+/target
+
+# secrets
+.direnv
+.envrc
