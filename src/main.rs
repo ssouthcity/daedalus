@@ -1,55 +1,69 @@
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
-// component
 #[derive(Component)]
-struct Position {
-    x: f32,
-    y: f32,
-}
+struct Player;
 
-// system
-fn print_position_system(query: Query<&Position>) {
-    for position in &query {
-        println!("position: {} {}", position.x, position.y);
+fn move_player(
+    mut query: Query<&mut LinearVelocity, With<Player>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+) {
+    let mut axis = Vec2::ZERO;
+
+    if keyboard_input.pressed(KeyCode::KeyW) {
+        axis += Vec2::Y;
+    }
+
+    if keyboard_input.pressed(KeyCode::KeyA) {
+        axis -= Vec2::X;
+    }
+
+    if keyboard_input.pressed(KeyCode::KeyS) {
+        axis -= Vec2::Y;
+    }
+
+    if keyboard_input.pressed(KeyCode::KeyD) {
+        axis += Vec2::X;
+    }
+
+    axis = axis.normalize();
+
+    for mut velocity in query.iter_mut() {
+        velocity.0 = axis * 128.0;
     }
 }
 
-// system
 fn setup(mut commands: Commands) {
     commands.spawn(Camera2d::default());
 
     commands.spawn((
-        Position { x: 16.0, y: 32.0 },
+        Player,
+        Transform::from_xyz(0.0, 0.0, 0.0),
         Sprite::from_color(Color::linear_rgb(1.0, 0.0, 0.0), Vec2::splat(32.0)),
+        // Physics
+        RigidBody::Dynamic,
+        LockedAxes::ROTATION_LOCKED,
+        Collider::rectangle(32.0, 32.0),
+        LinearVelocity(Vec2::ZERO),
+        AngularVelocity::ZERO,
+        Friction::ZERO,
     ));
-}
 
-fn translate_position_system(mut query: Query<(&Position, &mut Transform)>) {
-    for (pos, mut transform) in &mut query {
-        transform.translation.x = pos.x;
-        transform.translation.y = pos.y;
-    }
-}
-
-fn move_position_system(mut query: Query<&mut Position>) {
-    for mut pos in &mut query {
-        pos.x += 1.0;
-        pos.y += 1.0;
-    }
+    commands.spawn((
+        Transform::from_xyz(0.0, 200.0, 0.0),
+        Sprite::from_color(Color::linear_rgb(0.0, 1.0, 0.0), Vec2::new(600.0, 32.0)),
+        RigidBody::Static,
+        Collider::rectangle(600.0, 32.0),
+        Friction::ZERO,
+    ));
 }
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins((DefaultPlugins, PhysicsPlugins::default()))
         .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            (
-                move_position_system,
-                translate_position_system,
-                print_position_system,
-            )
-                .chain(),
-        )
+        .add_systems(Update, move_player)
+        .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 1.0)))
+        .insert_resource(Gravity(Vec2::ZERO))
         .run();
 }
