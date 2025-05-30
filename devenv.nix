@@ -18,6 +18,10 @@
 
     # pkgs.libudev0-shim
     # pkgs.libudev-zero
+
+    # Level Design
+    pkgs.ldtk
+    pkgs.aseprite
   ];
 
   languages.rust = {
@@ -29,6 +33,11 @@
     pkgs.vulkan-loader
     pkgs.wayland
   ];
+
+  processes = {
+    ldtk.exec = "ldtk";
+    aseprite.exec = "aseprite";
+  };
 
   git-hooks.hooks = {
     # General
