@@ -6,6 +6,9 @@ edition = "2024"
 [dependencies]
 avian2d = "0.3.0"
 bevy = "0.16.0"
+bevy-inspector-egui = "0.31.0"
+bevy_ecs_ldtk = { version = "0.12.0", features = ["atlas"] }
+bevy_egui = "0.34.1"
 
 [profile.dev]
 opt-level = 1
