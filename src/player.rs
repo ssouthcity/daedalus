@@ -7,10 +7,7 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.register_ldtk_entity::<PlayerEntity>("Player")
-            .add_systems(
-                Update,
-                (move_player, fix_translation, print_translation).chain(),
-            );
+            .add_systems(Update, (move_player, fix_translation).chain());
     }
 }
 
@@ -79,11 +76,5 @@ pub fn move_player(
 
     for mut velocity in query.iter_mut() {
         velocity.0 = axis * 128.0;
-    }
-}
-
-pub fn print_translation(query: Query<&Transform, With<Player>>) {
-    for transform in query.iter() {
-        println!("{}", transform.translation);
     }
 }

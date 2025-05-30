@@ -13,7 +13,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             scale: 0.5,
             ..OrthographicProjection::default_2d()
         }),
-        // Transform::from_xyz(1280.0 / 4.0, 720.0 / 4.0, 0.0),
+        Transform::from_xyz(1280.0 / 4.0, 720.0 / 4.0, 0.0),
     ));
 
     commands.spawn(LdtkWorldBundle {
