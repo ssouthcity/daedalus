@@ -2,6 +2,8 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
+use crate::camera::CameraTarget;
+
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
@@ -19,6 +21,7 @@ pub struct PlayerEntity {
     #[sprite("sprites/player.png")]
     pub sprite: Sprite,
     pub player: Player,
+    pub camera_target: CameraTarget,
 
     pub rigid_body: RigidBody,
     pub locked_axes: LockedAxes,
@@ -33,6 +36,7 @@ impl Default for PlayerEntity {
         Self {
             sprite: Sprite::default(),
             player: Player::default(),
+            camera_target: CameraTarget,
 
             rigid_body: RigidBody::Dynamic,
             locked_axes: LockedAxes::ROTATION_LOCKED,
