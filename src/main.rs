@@ -4,6 +4,7 @@ use bevy_ecs_ldtk::prelude::*;
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
+mod camera;
 mod player;
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -33,6 +34,7 @@ fn main() {
             },
             WorldInspectorPlugin::new(),
             // daedalus plugins
+            camera::CameraPlugin,
             player::PlayerPlugin,
         ))
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
