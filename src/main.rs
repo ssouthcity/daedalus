@@ -6,6 +6,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 mod camera;
 mod player;
+mod wall;
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -28,6 +29,7 @@ fn main() {
         .add_plugins((
             DefaultPlugins.set(ImagePlugin::default_nearest()),
             PhysicsPlugins::default(),
+            PhysicsDebugPlugin::default(),
             LdtkPlugin,
             EguiPlugin {
                 enable_multipass_for_primary_context: true,
@@ -36,6 +38,7 @@ fn main() {
             // daedalus plugins
             camera::CameraPlugin,
             player::PlayerPlugin,
+            wall::WallPlugin,
         ))
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
         .insert_resource(Gravity(Vec2::ZERO))
