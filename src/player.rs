@@ -4,11 +4,15 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::camera::CameraTarget;
 
+const PLAYER_WALK_SPEED: f32 = 96.0;
+const PLAYER_RUN_SPEED: f32 = 128.0;
+
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.register_ldtk_entity::<PlayerEntity>("Player")
+            .add_systems(Update, process_player)
             .add_systems(Update, (move_player, fix_translation).chain());
     }
 }
@@ -16,35 +20,27 @@ impl Plugin for PlayerPlugin {
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
 pub struct Player;
 
-#[derive(Clone, Bundle, LdtkEntity)]
+#[derive(Clone, Default, Bundle, LdtkEntity)]
 pub struct PlayerEntity {
-    #[sprite("sprites/player.png")]
-    pub sprite: Sprite,
     pub player: Player,
+    #[sprite_sheet]
+    pub sprite_sheet: Sprite,
     pub camera_target: CameraTarget,
-
-    pub rigid_body: RigidBody,
-    pub locked_axes: LockedAxes,
-    pub collider: Collider,
-    pub linear_velocity: LinearVelocity,
-    pub angular_velocity: AngularVelocity,
-    pub friction: Friction,
 }
 
-impl Default for PlayerEntity {
-    fn default() -> Self {
-        Self {
-            sprite: Sprite::default(),
-            player: Player::default(),
-            camera_target: CameraTarget,
+pub fn process_player(mut commands: Commands, entity_query: Query<Entity, Added<Player>>) {
+    for entity in entity_query.iter() {
+        commands.entity(entity).insert((
+            RigidBody::Dynamic,
+            LockedAxes::ROTATION_LOCKED,
+            LinearVelocity::ZERO,
+        ));
 
-            rigid_body: RigidBody::Dynamic,
-            locked_axes: LockedAxes::ROTATION_LOCKED,
-            collider: Collider::rectangle(16.0, 16.0),
-            linear_velocity: LinearVelocity::ZERO,
-            angular_velocity: AngularVelocity::ZERO,
-            friction: Friction::ZERO,
-        }
+        commands.spawn((
+            ChildOf(entity),
+            Transform::from_xyz(0.0, -8.0, 0.0),
+            Collider::rectangle(4.0, 4.0),
+        ));
     }
 }
 
@@ -78,7 +74,13 @@ pub fn move_player(
 
     axis = axis.normalize();
 
+    let speed = if keyboard_input.pressed(KeyCode::ShiftLeft) {
+        PLAYER_RUN_SPEED
+    } else {
+        PLAYER_WALK_SPEED
+    };
+
     for mut velocity in query.iter_mut() {
-        velocity.0 = axis * 128.0;
+        velocity.0 = axis * speed;
     }
 }
