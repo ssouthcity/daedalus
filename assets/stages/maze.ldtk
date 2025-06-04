@@ -11,7 +11,7 @@
 	"iid": "71d56250-3740-11f0-a07e-0993f98258fb",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 33,
+	"nextUid": 35,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "Free",
@@ -499,7 +499,45 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "Health",
+					"doc": null,
+					"__type": "Int",
+					"uid": 33,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "Hidden",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Above",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": false,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Int", "params": [100] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		},
 		{
 			"identifier": "Health_Potion",
@@ -534,7 +572,45 @@
 			"limitBehavior": "MoveLastOne",
 			"pivotX": 0,
 			"pivotY": 0,
-			"fieldDefs": []
+			"fieldDefs": [
+				{
+					"identifier": "Health",
+					"doc": null,
+					"__type": "Int",
+					"uid": 34,
+					"type": "F_Int",
+					"isArray": false,
+					"canBeNull": false,
+					"arrayMinLength": null,
+					"arrayMaxLength": null,
+					"editorDisplayMode": "ValueOnly",
+					"editorDisplayScale": 1,
+					"editorDisplayPos": "Beneath",
+					"editorLinkStyle": "StraightArrow",
+					"editorDisplayColor": null,
+					"editorAlwaysShow": true,
+					"editorShowInWorld": true,
+					"editorCutLongValues": true,
+					"editorTextSuffix": null,
+					"editorTextPrefix": null,
+					"useForSmartColor": false,
+					"exportToToc": false,
+					"searchable": false,
+					"min": null,
+					"max": null,
+					"regex": null,
+					"acceptFileTypes": null,
+					"defaultOverride": { "id": "V_Int", "params": [20] },
+					"textLanguageMode": null,
+					"symmetricalRef": false,
+					"autoChainRef": true,
+					"allowOutOfLevelRef": true,
+					"allowedRefs": "OnlySame",
+					"allowedRefsEntityUid": null,
+					"allowedRefTags": [],
+					"tilesetUid": null
+				}
+			]
 		}
 	], "tilesets": [
 		{
@@ -640,7 +716,7 @@
 							"height": 16,
 							"defUid": 25,
 							"px": [0,0],
-							"fieldInstances": [],
+							"fieldInstances": [{ "__identifier": "Health", "__type": "Int", "__value": 100, "__tile": null, "defUid": 33, "realEditorValues": [] }],
 							"__worldX": 0,
 							"__worldY": 0
 						}
@@ -682,7 +758,7 @@
 							"height": 16,
 							"defUid": 30,
 							"px": [48,208],
-							"fieldInstances": [],
+							"fieldInstances": [{ "__identifier": "Health", "__type": "Int", "__value": 20, "__tile": null, "defUid": 34, "realEditorValues": [] }],
 							"__worldX": 48,
 							"__worldY": 208
 						},
@@ -698,7 +774,7 @@
 							"height": 16,
 							"defUid": 30,
 							"px": [192,64],
-							"fieldInstances": [],
+							"fieldInstances": [{ "__identifier": "Health", "__type": "Int", "__value": 20, "__tile": null, "defUid": 34, "realEditorValues": [] }],
 							"__worldX": 192,
 							"__worldY": 64
 						}
