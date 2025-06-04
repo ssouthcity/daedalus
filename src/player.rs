@@ -13,7 +13,7 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.register_ldtk_entity::<PlayerEntity>("Player")
             .add_systems(Update, process_player)
-            .add_systems(Update, (move_player, fix_translation).chain());
+            .add_systems(Update, move_player);
     }
 }
 
@@ -41,12 +41,6 @@ pub fn process_player(mut commands: Commands, entity_query: Query<Entity, Added<
             Transform::from_xyz(0.0, -8.0, 0.0),
             Collider::rectangle(4.0, 4.0),
         ));
-    }
-}
-
-pub fn fix_translation(mut query: Query<&mut Transform, With<Player>>) {
-    for mut transform in query.iter_mut() {
-        transform.translation.z = 3.0;
     }
 }
 

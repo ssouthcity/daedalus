@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
 mod camera;
+mod collectible;
 #[cfg(feature = "dev")]
 mod debug;
 mod player;
@@ -39,10 +40,11 @@ impl Plugin for AppPlugin {
 
         app.add_plugins((
             camera::CameraPlugin,
-            player::PlayerPlugin,
-            wall::WallPlugin,
+            collectible::CollectiblePlugin,
             #[cfg(feature = "dev")]
             debug::DebugPlugin,
+            player::PlayerPlugin,
+            wall::WallPlugin,
         ));
 
         app.insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
