@@ -6,6 +6,8 @@ mod camera;
 mod collectible;
 #[cfg(feature = "dev")]
 mod debug;
+mod entity;
+mod field;
 mod player;
 mod wall;
 
@@ -43,6 +45,7 @@ impl Plugin for AppPlugin {
             collectible::CollectiblePlugin,
             #[cfg(feature = "dev")]
             debug::DebugPlugin,
+            entity::LdtkEntityPlugin,
             player::PlayerPlugin,
             wall::WallPlugin,
         ));
@@ -65,24 +68,6 @@ pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         }),
         Transform::from_xyz(1280.0 / 4.0, 720.0 / 4.0, 0.0),
     ));
-
-    commands
-        .spawn(Node {
-            width: Val::Percent(100.0),
-            height: Val::Percent(100.0),
-            justify_content: JustifyContent::SpaceBetween,
-            ..default()
-        })
-        .with_children(|parent| {
-            parent.spawn((
-                Node {
-                    width: Val::Px(200.0),
-                    height: Val::Px(100.0),
-                    ..default()
-                },
-                BackgroundColor(bevy::color::palettes::css::CORAL.into()),
-            ));
-        });
 
     commands.spawn(LdtkWorldBundle {
         ldtk_handle: asset_server.load("stages/maze.ldtk").into(),

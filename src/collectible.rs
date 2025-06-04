@@ -1,6 +1,5 @@
 use crate::player;
 use bevy::prelude::*;
-use bevy_ecs_ldtk::prelude::*;
 
 const COLLECTIBLE_COLLECT_THRESHOLD: f32 = 12.0;
 const COLLECTIBLE_FLOAT_THRESHOLD: f32 = 32.0;
@@ -10,37 +9,28 @@ pub struct CollectiblePlugin;
 
 impl Plugin for CollectiblePlugin {
     fn build(&self, app: &mut App) {
-        app.register_ldtk_entity::<PotionBundle>("Health_Potion")
-            .add_systems(
-                Update,
-                (
-                    float_towards_player_system,
-                    float_towards_target_system,
-                    collection_system,
-                )
-                    .chain(),
-            );
+        app.add_systems(
+            Update,
+            (
+                float_towards_player_system,
+                float_towards_target_system,
+                collection_system,
+            )
+                .chain(),
+        );
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
-struct Collectible;
+pub struct Collectible;
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Component)]
 struct FloatTowards(Entity);
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
-enum Potion {
+pub enum Potion {
     #[default]
     Health,
-}
-
-#[derive(Clone, Default, Debug, Bundle, LdtkEntity)]
-struct PotionBundle {
-    collectible: Collectible,
-    potion: Potion,
-    #[sprite_sheet]
-    sprite_sheet: Sprite,
 }
 
 fn float_towards_player_system(
@@ -92,7 +82,6 @@ fn collection_system(
             .distance(collectible_transform.translation);
 
         if distance <= COLLECTIBLE_COLLECT_THRESHOLD {
-            // handle collect
             println!("collected!");
 
             commands.entity(collectible_entity).despawn();
