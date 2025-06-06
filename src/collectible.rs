@@ -1,4 +1,7 @@
-use crate::player;
+use crate::{
+    field::Health,
+    player::{self, Player},
+};
 use bevy::prelude::*;
 
 const COLLECTIBLE_COLLECT_THRESHOLD: f32 = 12.0;
@@ -9,15 +12,17 @@ pub struct CollectiblePlugin;
 
 impl Plugin for CollectiblePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (
-                float_towards_player_system,
-                float_towards_target_system,
-                collection_system,
+        app.add_event::<HealEvent>()
+            .add_systems(
+                Update,
+                (
+                    float_towards_player_system,
+                    float_towards_target_system,
+                    collection_system,
+                )
+                    .chain(),
             )
-                .chain(),
-        );
+            .add_systems(Update, heal_system);
     }
 }
 
@@ -32,6 +37,9 @@ pub enum Potion {
     #[default]
     Health,
 }
+
+#[derive(Event)]
+pub struct HealEvent(i32);
 
 fn float_towards_player_system(
     mut commands: Commands,
@@ -75,6 +83,7 @@ fn collection_system(
     mut commands: Commands,
     player_transform: Single<&Transform, With<player::Player>>,
     collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<player::Player>)>,
+    mut events: EventWriter<HealEvent>,
 ) {
     for (collectible_entity, collectible_transform) in collectibles.iter() {
         let distance = player_transform
@@ -82,9 +91,18 @@ fn collection_system(
             .distance(collectible_transform.translation);
 
         if distance <= COLLECTIBLE_COLLECT_THRESHOLD {
-            println!("collected!");
+            events.write(HealEvent(20));
 
             commands.entity(collectible_entity).despawn();
         }
+    }
+}
+
+fn heal_system(
+    mut events: EventReader<HealEvent>,
+    mut player_health: Single<&mut Health, With<Player>>,
+) {
+    for event in events.read() {
+        player_health.0 += event.0;
     }
 }

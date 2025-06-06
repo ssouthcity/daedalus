@@ -8,6 +8,7 @@ mod collectible;
 mod debug;
 mod entity;
 mod field;
+mod hud;
 mod player;
 mod wall;
 
@@ -46,6 +47,7 @@ impl Plugin for AppPlugin {
             #[cfg(feature = "dev")]
             debug::DebugPlugin,
             entity::LdtkEntityPlugin,
+            hud::HudPlugin,
             player::PlayerPlugin,
             wall::WallPlugin,
         ));
