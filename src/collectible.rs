@@ -1,4 +1,5 @@
 use crate::{
+    audio,
     field::Health,
     player::{self, Player},
 };
@@ -84,6 +85,7 @@ fn collection_system(
     player_transform: Single<&Transform, With<player::Player>>,
     collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<player::Player>)>,
     mut events: EventWriter<HealEvent>,
+    asset_server: Res<AssetServer>,
 ) {
     for (collectible_entity, collectible_transform) in collectibles.iter() {
         let distance = player_transform
@@ -92,6 +94,10 @@ fn collection_system(
 
         if distance <= COLLECTIBLE_COLLECT_THRESHOLD {
             events.write(HealEvent(20));
+
+            // convert this to a loading system, instead of loading on the fly
+            let potion_sound = asset_server.load("sound_effects/potion_collect.ogg");
+            commands.spawn(audio::sound_effect(potion_sound));
 
             commands.entity(collectible_entity).despawn();
         }
