@@ -2,6 +2,7 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
+mod audio;
 mod camera;
 mod collectible;
 #[cfg(feature = "dev")]
@@ -42,6 +43,7 @@ impl Plugin for AppPlugin {
         ));
 
         app.add_plugins((
+            audio::plugin,
             camera::CameraPlugin,
             collectible::CollectiblePlugin,
             #[cfg(feature = "dev")]
