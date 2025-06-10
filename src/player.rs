@@ -1,51 +1,38 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
+use crate::input::{InteractInput, MovementInput};
+
 const PLAYER_WALK_SPEED: f32 = 96.0;
 const PLAYER_RUN_SPEED: f32 = 128.0;
 
-pub struct PlayerPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<Player>();
 
-impl Plugin for PlayerPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, move_player);
-    }
+    app.add_systems(Update, (player_movement, player_interact));
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component, Reflect)]
+#[reflect(Component)]
 pub struct Player;
 
-pub fn move_player(
-    mut query: Query<&mut LinearVelocity, With<Player>>,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
+fn player_movement(
+    query: Query<&mut LinearVelocity, With<Player>>,
+    movement_input: Res<MovementInput>,
 ) {
-    let mut axis = Vec2::ZERO;
-
-    if keyboard_input.pressed(KeyCode::KeyW) {
-        axis += Vec2::Y;
-    }
-
-    if keyboard_input.pressed(KeyCode::KeyA) {
-        axis -= Vec2::X;
-    }
-
-    if keyboard_input.pressed(KeyCode::KeyS) {
-        axis -= Vec2::Y;
-    }
-
-    if keyboard_input.pressed(KeyCode::KeyD) {
-        axis += Vec2::X;
-    }
-
-    axis = axis.normalize();
-
-    let speed = if keyboard_input.pressed(KeyCode::ShiftLeft) {
+    let speed = if movement_input.is_sprinting {
         PLAYER_RUN_SPEED
     } else {
         PLAYER_WALK_SPEED
     };
 
-    for mut velocity in query.iter_mut() {
-        velocity.0 = axis * speed;
+    for mut velocity in query {
+        velocity.0 = movement_input.axis * speed;
+    }
+}
+
+fn player_interact(mut events: EventReader<InteractInput>) {
+    for _ in events.read() {
+        println!("interact!");
     }
 }
