@@ -10,6 +10,7 @@ mod debug;
 mod entity;
 mod field;
 mod hud;
+mod input;
 mod player;
 mod wall;
 
@@ -50,7 +51,8 @@ impl Plugin for AppPlugin {
             debug::DebugPlugin,
             entity::LdtkEntityPlugin,
             hud::HudPlugin,
-            player::PlayerPlugin,
+            input::plugin,
+            player::plugin,
             wall::WallPlugin,
         ));
 
