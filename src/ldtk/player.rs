@@ -2,7 +2,7 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::{camera::CameraTarget, field::Health, player::Player};
+use crate::{camera::CameraTarget, health::Health, player::Player};
 
 #[derive(Clone, Default, Bundle, LdtkEntity)]
 pub struct PlayerEntity {
@@ -10,7 +10,7 @@ pub struct PlayerEntity {
     #[sprite_sheet]
     pub sprite_sheet: Sprite,
     pub camera_target: CameraTarget,
-    #[with(Health::from_field)]
+    #[with(Health::from_ldtk_field)]
     pub health: Health,
 }
 

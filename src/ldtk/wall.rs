@@ -2,14 +2,6 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-pub struct WallPlugin;
-
-impl Plugin for WallPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_ldtk_int_cell::<WallBundle>(1);
-    }
-}
-
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
 pub struct Wall;
 

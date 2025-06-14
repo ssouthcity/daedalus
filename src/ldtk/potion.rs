@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
     collectible::{Collectible, Potion},
-    field::Health,
+    health::Health,
 };
 
 #[derive(Clone, Default, Debug, Bundle, LdtkEntity)]
@@ -12,6 +12,6 @@ pub struct PotionEntity {
     pub potion: Potion,
     #[sprite_sheet]
     pub sprite_sheet: Sprite,
-    #[with(Health::from_field)]
+    #[with(Health::from_ldtk_field)]
     pub health: Health,
 }
