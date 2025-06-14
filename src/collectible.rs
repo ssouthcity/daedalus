@@ -1,30 +1,20 @@
-use crate::{
-    audio,
-    field::Health,
-    player::{self, Player},
-};
+use crate::{audio, health::HealEvent, player::Player};
 use bevy::prelude::*;
 
 const COLLECTIBLE_COLLECT_THRESHOLD: f32 = 12.0;
 const COLLECTIBLE_FLOAT_THRESHOLD: f32 = 32.0;
 const COLLECTIBLE_FLOAT_SPEED: f32 = 2.0;
 
-pub struct CollectiblePlugin;
-
-impl Plugin for CollectiblePlugin {
-    fn build(&self, app: &mut App) {
-        app.add_event::<HealEvent>()
-            .add_systems(
-                Update,
-                (
-                    float_towards_player_system,
-                    float_towards_target_system,
-                    collection_system,
-                )
-                    .chain(),
-            )
-            .add_systems(Update, heal_system);
-    }
+pub(super) fn plugin(app: &mut App) {
+    app.add_systems(
+        Update,
+        (
+            float_towards_player_system,
+            float_towards_target_system,
+            collection_system,
+        )
+            .chain(),
+    );
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
@@ -39,13 +29,10 @@ pub enum Potion {
     Health,
 }
 
-#[derive(Event)]
-pub struct HealEvent(i32);
-
 fn float_towards_player_system(
     mut commands: Commands,
-    player: Single<(Entity, &Transform), With<player::Player>>,
-    collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<player::Player>)>,
+    player: Single<(Entity, &Transform), With<Player>>,
+    collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<Player>)>,
 ) {
     let (player_entity, player_transform) = (player.0, player.1);
 
@@ -82,18 +69,23 @@ fn float_towards_target_system(
 
 fn collection_system(
     mut commands: Commands,
-    player_transform: Single<&Transform, With<player::Player>>,
-    collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<player::Player>)>,
+    player: Single<(Entity, &Transform), With<Player>>,
+    collectibles: Query<(Entity, &Transform), (With<Collectible>, Without<Player>)>,
     mut events: EventWriter<HealEvent>,
     asset_server: Res<AssetServer>,
 ) {
     for (collectible_entity, collectible_transform) in collectibles.iter() {
+        let (player_entity, player_transform) = (player.0, player.1);
+
         let distance = player_transform
             .translation
             .distance(collectible_transform.translation);
 
         if distance <= COLLECTIBLE_COLLECT_THRESHOLD {
-            events.write(HealEvent(20));
+            events.write(HealEvent {
+                entity: player_entity,
+                amount: 20,
+            });
 
             // convert this to a loading system, instead of loading on the fly
             let potion_sound = asset_server.load("sound_effects/potion_collect.ogg");
@@ -101,14 +93,5 @@ fn collection_system(
 
             commands.entity(collectible_entity).despawn();
         }
-    }
-}
-
-fn heal_system(
-    mut events: EventReader<HealEvent>,
-    mut player_health: Single<&mut Health, With<Player>>,
-) {
-    for event in events.read() {
-        player_health.0 += event.0;
     }
 }
