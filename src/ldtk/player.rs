@@ -7,10 +7,12 @@ use crate::{camera::CameraTarget, health::Health, player::Player};
 #[derive(Clone, Default, Bundle, LdtkEntity)]
 pub struct PlayerEntity {
     pub player: Player,
-    #[sprite_sheet]
-    pub sprite_sheet: Sprite,
     pub camera_target: CameraTarget,
-    #[with(Health::from_ldtk_field)]
+    #[sprite_sheet(no_grid)]
+    pub sprite_sheet: Sprite,
+    #[worldly]
+    pub worldly: Worldly,
+    #[from_entity_instance]
     pub health: Health,
 }
 
