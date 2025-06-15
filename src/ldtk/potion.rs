@@ -12,6 +12,6 @@ pub struct PotionEntity {
     pub potion: Potion,
     #[sprite_sheet]
     pub sprite_sheet: Sprite,
-    #[with(Health::from_ldtk_field)]
+    #[from_entity_instance]
     pub health: Health,
 }

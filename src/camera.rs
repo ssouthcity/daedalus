@@ -23,10 +23,10 @@ fn setup_main_camera(mut commands: Commands) {
 
 fn follow_target(
     mut camera: Single<&mut Transform, (With<Camera2d>, Without<CameraTarget>)>,
-    target: Single<&Transform, (With<CameraTarget>, Without<Camera2d>)>,
+    target: Single<&GlobalTransform, (With<CameraTarget>, Without<Camera2d>)>,
     time: Res<Time>,
 ) {
-    let Vec3 { x, y, .. } = target.translation;
+    let Vec3 { x, y, .. } = target.translation();
     let direction = Vec3::new(x, y, camera.translation.z);
 
     camera
