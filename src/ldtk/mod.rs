@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::player::Player;
+use crate::{audio::TransitionBackgroundMusic, player::Player};
 
 mod fields;
 mod player;
@@ -47,6 +47,8 @@ fn level_selection_follow_player(
     ldtk_project: Single<&LdtkProjectHandle>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
     mut level_selection: ResMut<LevelSelection>,
+    mut transition_music: EventWriter<TransitionBackgroundMusic>,
+    asset_server: Res<AssetServer>,
 ) {
     let ldtk_project = ldtk_project_assets
         .get(ldtk_project.into_inner())
@@ -61,8 +63,27 @@ fn level_selection_follow_player(
 
         let level_bounds = Rect::new(x, y, x + level.px_wid as f32, y + level.px_hei as f32);
 
-        if level_bounds.contains(player_transform.translation().truncate()) {
-            *level_selection = LevelSelection::Iid(level_iid.clone());
+        if !level_bounds.contains(player_transform.translation().truncate()) {
+            continue;
+        }
+
+        if let LevelSelection::Iid(current_id) = level_selection.clone() {
+            if current_id.as_str() == level.iid {
+                continue;
+            }
+        }
+
+        *level_selection = LevelSelection::Iid(level_iid.clone());
+
+        if let Some(FieldValue::FilePath(Some(path))) = level
+            .field_instances
+            .iter()
+            .filter(|f| f.identifier == "Background_Music")
+            .map(|f| f.value.clone())
+            .nth(0)
+        {
+            let music = asset_server.load(format!("stages/{}", path));
+            transition_music.write(TransitionBackgroundMusic(music));
         }
     }
 }
