@@ -32,6 +32,22 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct MasterVolume(f32);
 
+impl MasterVolume {
+    const INCREMENTS: f32 = 0.1;
+
+    pub fn increment(&mut self) {
+        self.set(self.0 + Self::INCREMENTS);
+    }
+
+    pub fn decrement(&mut self) {
+        self.set(self.0 - Self::INCREMENTS);
+    }
+
+    pub fn set(&mut self, value: f32) {
+        self.0 = value.clamp(0.0, 1.0);
+    }
+}
+
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 pub struct RelativeVolume(f32);
@@ -77,11 +93,11 @@ impl Default for AudioSettings {
 }
 
 impl AudioSettings {
-    fn muted(&self) -> bool {
+    pub fn muted(&self) -> bool {
         self.is_muted
     }
 
-    fn toggle_mute(&mut self) {
+    pub fn toggle_mute(&mut self) {
         self.is_muted = !self.is_muted;
     }
 }
@@ -170,9 +186,9 @@ fn mute_audio(mut audio_settings: ResMut<AudioSettings>) {
 }
 
 fn increase_master_volume(mut master_volume: ResMut<MasterVolume>) {
-    master_volume.0 = (master_volume.0 + 0.1).min(1.0);
+    master_volume.increment();
 }
 
 fn decrease_master_volume(mut master_volume: ResMut<MasterVolume>) {
-    master_volume.0 = (master_volume.0 - 0.1).max(0.0);
+    master_volume.decrement();
 }

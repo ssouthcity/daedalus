@@ -19,22 +19,42 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_pause_menu(mut commands: Commands) {
     commands.spawn((
-        widgets::root("pause menu"),
+        widgets::root("Pause menu"),
         widgets::background_dimmed(),
         StateScoped(MenuState::Pause),
-        children![(widgets::card(), children![widgets::header("Paused"),],)],
+        children![(
+            widgets::card(),
+            children![
+                widgets::header("Paused"),
+                (
+                    widgets::list(),
+                    children![
+                        widgets::button("Resume", resume),
+                        widgets::button("Settings", settings),
+                        widgets::button("Quit", quit),
+                    ]
+                )
+            ],
+        )],
     ));
 }
 
-fn pause(mut next_paused: ResMut<NextState<Paused>>, mut next_menu: ResMut<NextState<MenuState>>) {
-    next_paused.set(Paused(true));
+fn pause(mut next_menu: ResMut<NextState<MenuState>>) {
     next_menu.set(MenuState::Pause);
 }
 
-fn unpause(
-    mut next_paused: ResMut<NextState<Paused>>,
-    mut next_menu: ResMut<NextState<MenuState>>,
-) {
-    next_paused.set(Paused(false));
+fn unpause(mut next_menu: ResMut<NextState<MenuState>>) {
     next_menu.set(MenuState::None);
+}
+
+fn resume(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<MenuState>>) {
+    next_menu.set(MenuState::None);
+}
+
+fn settings(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<MenuState>>) {
+    next_menu.set(MenuState::Settings);
+}
+
+fn quit(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
+    app_exit.write(AppExit::Success);
 }
