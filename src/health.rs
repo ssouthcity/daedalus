@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -8,7 +9,10 @@ pub(super) fn plugin(app: &mut App) {
 
     app.register_type::<Health>();
 
-    app.add_systems(Update, (heal_entities, hurt_entities));
+    app.add_systems(
+        Update,
+        (heal_entities, hurt_entities).in_set(PauseableSystems),
+    );
 }
 
 #[derive(Event)]

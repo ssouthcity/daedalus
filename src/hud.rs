@@ -1,10 +1,11 @@
+use crate::prelude::*;
 use bevy::prelude::*;
 
 use crate::{health::Health, player};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Startup, setup_hud_system)
-        .add_systems(Update, update_hp_system);
+        .add_systems(Update, update_hp_system.in_set(PauseableSystems));
 }
 
 #[derive(Component)]

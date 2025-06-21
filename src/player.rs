@@ -1,7 +1,10 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::input::{InteractInput, MovementInput};
+use crate::{
+    input::{InteractInput, MovementInput},
+    pause::PauseableSystems,
+};
 
 const PLAYER_WALK_SPEED: f32 = 96.0;
 const PLAYER_RUN_SPEED: f32 = 128.0;
@@ -9,7 +12,10 @@ const PLAYER_RUN_SPEED: f32 = 128.0;
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Player>();
 
-    app.add_systems(Update, (player_movement, player_interact));
+    app.add_systems(
+        Update,
+        (player_movement, player_interact).in_set(PauseableSystems),
+    );
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component, Reflect)]
