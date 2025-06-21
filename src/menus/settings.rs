@@ -1,14 +1,14 @@
 use crate::prelude::*;
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use crate::menus::MenuState;
+use crate::menus::Menu;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(MenuState::Settings), spawn_settings_menu);
+    app.add_systems(OnEnter(Menu::Settings), spawn_settings_menu);
 
     app.add_systems(
         Update,
-        go_back.run_if(in_state(MenuState::Settings).and(input_just_pressed(KeyCode::Escape))),
+        go_back.run_if(in_state(Menu::Settings).and(input_just_pressed(KeyCode::Escape))),
     );
 }
 
@@ -16,7 +16,7 @@ fn spawn_settings_menu(mut commands: Commands) {
     commands.spawn((
         widgets::root("Settings menu"),
         widgets::background_dimmed(),
-        StateScoped(MenuState::Settings),
+        StateScoped(Menu::Settings),
         children![(
             widgets::card(),
             children![
@@ -57,10 +57,10 @@ fn increase_volume(_: Trigger<Pointer<Click>>, mut master_volume: ResMut<MasterV
     master_volume.increment();
 }
 
-fn trigger_go_back(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::Pause);
+fn trigger_go_back(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::Pause);
 }
 
-fn go_back(mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::Pause);
+fn go_back(mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::Pause);
 }

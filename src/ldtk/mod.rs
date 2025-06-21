@@ -20,8 +20,7 @@ pub(super) fn plugin(app: &mut App) {
         ..default()
     });
 
-    app.add_systems(Startup, spawn_world)
-        .add_systems(Update, level_selection_follow_player);
+    app.add_systems(Update, level_selection_follow_player);
 
     app.register_ldtk_entity::<player::PlayerEntity>("Player")
         .add_systems(Update, player::process_player);
@@ -31,7 +30,7 @@ pub(super) fn plugin(app: &mut App) {
     app.register_ldtk_int_cell::<wall::WallBundle>(1);
 }
 
-fn spawn_world(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn spawn_world(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Name::new("Ldtk World"),
         LdtkWorldBundle {
