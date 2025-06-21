@@ -15,6 +15,7 @@ mod pause;
 mod physics;
 mod player;
 mod prelude;
+mod screens;
 mod theme;
 
 pub struct AppPlugin;
@@ -34,6 +35,7 @@ impl Plugin for AppPlugin {
             pause::plugin,
             physics::plugin,
             player::plugin,
+            screens::plugin,
         ));
 
         #[cfg(feature = "dev")]

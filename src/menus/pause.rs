@@ -1,19 +1,14 @@
 use crate::prelude::*;
 use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 
-use super::MenuState;
+use super::Menu;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(MenuState::Pause), spawn_pause_menu);
+    app.add_systems(OnEnter(Menu::Pause), spawn_pause_menu);
 
     app.add_systems(
         Update,
-        pause.run_if(in_state(MenuState::None).and(input_just_pressed(KeyCode::Escape))),
-    );
-
-    app.add_systems(
-        Update,
-        unpause.run_if(in_state(MenuState::Pause).and(input_just_pressed(KeyCode::Escape))),
+        close_menu.run_if(in_state(Menu::Pause).and(input_just_pressed(KeyCode::Escape))),
     );
 }
 
@@ -21,7 +16,7 @@ fn spawn_pause_menu(mut commands: Commands) {
     commands.spawn((
         widgets::root("Pause menu"),
         widgets::background_dimmed(),
-        StateScoped(MenuState::Pause),
+        StateScoped(Menu::Pause),
         children![(
             widgets::card(),
             children![
@@ -39,20 +34,16 @@ fn spawn_pause_menu(mut commands: Commands) {
     ));
 }
 
-fn pause(mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::Pause);
+fn close_menu(mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::None);
 }
 
-fn unpause(mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::None);
+fn resume(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::None);
 }
 
-fn resume(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::None);
-}
-
-fn settings(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<MenuState>>) {
-    next_menu.set(MenuState::Settings);
+fn settings(_: Trigger<Pointer<Click>>, mut next_menu: ResMut<NextState<Menu>>) {
+    next_menu.set(Menu::Settings);
 }
 
 fn quit(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
