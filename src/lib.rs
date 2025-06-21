@@ -10,8 +10,12 @@ mod health;
 mod hud;
 mod input;
 mod ldtk;
+mod menus;
+mod pause;
 mod physics;
 mod player;
+mod prelude;
+mod theme;
 
 pub struct AppPlugin;
 
@@ -26,6 +30,8 @@ impl Plugin for AppPlugin {
             hud::plugin,
             input::plugin,
             ldtk::plugin,
+            menus::plugin,
+            pause::plugin,
             physics::plugin,
             player::plugin,
         ));

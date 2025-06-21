@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use crate::{audio, health::HealEvent, player::Player};
 use bevy::prelude::*;
 
@@ -13,7 +14,8 @@ pub(super) fn plugin(app: &mut App) {
             float_towards_target_system,
             collection_system,
         )
-            .chain(),
+            .chain()
+            .in_set(PauseableSystems),
     );
 }
 

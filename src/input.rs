@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -13,7 +14,8 @@ pub(super) fn plugin(app: &mut App) {
             collect_keyboard_sprinting,
             collect_keyboard_interact,
         )
-            .run_if(resource_equals(InputDevice::MouseAndKeyboard)),
+            .run_if(resource_equals(InputDevice::MouseAndKeyboard))
+            .in_set(PauseableSystems),
     );
 }
 
