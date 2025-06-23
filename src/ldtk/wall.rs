@@ -2,32 +2,26 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
-pub struct Wall;
+pub(super) fn plugin(app: &mut App) {
+    app.register_ldtk_int_cell::<WallBundle>(1);
 
-#[derive(Clone, Debug, Bundle, LdtkIntCell)]
-pub struct WallBundle {
-    pub wall: Wall,
-
-    pub rigid_body: RigidBody,
-    pub locked_axes: LockedAxes,
-    pub collider: Collider,
-    pub linear_velocity: LinearVelocity,
-    pub angular_velocity: AngularVelocity,
-    pub friction: Friction,
+    app.add_systems(Update, process_wall);
 }
 
-impl Default for WallBundle {
-    fn default() -> Self {
-        Self {
-            wall: Wall::default(),
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component)]
+struct Wall;
 
-            rigid_body: RigidBody::Static,
-            locked_axes: LockedAxes::ROTATION_LOCKED,
-            collider: Collider::rectangle(16.0, 16.0),
-            linear_velocity: LinearVelocity::default(),
-            angular_velocity: AngularVelocity::default(),
-            friction: Friction::default(),
-        }
+#[derive(Clone, Debug, Bundle, Default, LdtkIntCell)]
+struct WallBundle {
+    wall: Wall,
+}
+
+fn process_wall(mut commands: Commands, query: Query<Entity, Added<Wall>>) {
+    for entity in query {
+        commands.entity(entity).insert((
+            RigidBody::Static,
+            LockedAxes::ROTATION_LOCKED,
+            Collider::rectangle(16.0, 16.0),
+        ));
     }
 }
