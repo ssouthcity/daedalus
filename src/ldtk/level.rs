@@ -1,11 +1,34 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
+use crate::assets::LoadResource;
 use crate::audio::TransitionBackgroundMusic;
 use crate::camera::CameraTarget;
 
 pub(super) fn plugin(app: &mut App) {
+    app.register_type::<BackgroundMusicAssets>();
+    app.load_resource::<BackgroundMusicAssets>();
+
     app.add_systems(Update, level_selection_follow_camera);
+}
+
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+pub struct BackgroundMusicAssets {
+    #[dependency]
+    overworld: Handle<AudioSource>,
+    #[dependency]
+    inside: Handle<AudioSource>,
+}
+
+impl FromWorld for BackgroundMusicAssets {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        Self {
+            overworld: asset_server.load("music/overworld.ogg"),
+            inside: asset_server.load("music/inside.ogg"),
+        }
+    }
 }
 
 fn level_selection_follow_camera(
@@ -15,7 +38,7 @@ fn level_selection_follow_camera(
     ldtk_project_assets: Res<Assets<LdtkProject>>,
     mut level_selection: ResMut<LevelSelection>,
     mut transition_music: EventWriter<TransitionBackgroundMusic>,
-    asset_server: Res<AssetServer>,
+    background_music_assets: Res<BackgroundMusicAssets>,
 ) {
     let ldtk_project = ldtk_project_assets
         .get(ldtk_project.into_inner())
@@ -42,14 +65,14 @@ fn level_selection_follow_camera(
 
         *level_selection = LevelSelection::Iid(level_iid.clone());
 
-        if let Some(FieldValue::FilePath(Some(path))) = level
-            .field_instances
-            .iter()
-            .find(|f| f.identifier == "Background_Music")
-            .map(|f| f.value.clone())
-        {
-            let music = asset_server.load(format!("stages/{}", path));
-            transition_music.write(TransitionBackgroundMusic(music));
+        if let Ok(value) = level.get_enum_field("BackgroundMusicTrack") {
+            let track = match value.as_str() {
+                "Overworld" => background_music_assets.overworld.clone_weak(),
+                "Inside" => background_music_assets.inside.clone_weak(),
+                _ => unreachable!("unrecognized background music track"),
+            };
+
+            transition_music.write(TransitionBackgroundMusic(track));
         }
     }
 }

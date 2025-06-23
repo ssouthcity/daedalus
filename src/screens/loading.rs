@@ -1,8 +1,6 @@
-use std::time::Duration;
-
+use crate::assets::common_conditions::all_assets_loaded;
 use crate::prelude::*;
 use bevy::prelude::*;
-use bevy::time::common_conditions::once_after_delay;
 
 use super::Screen;
 
@@ -11,8 +9,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_systems(
         Update,
-        enter_gameplay_screen
-            .run_if(in_state(Screen::Loading).and(once_after_delay(Duration::from_secs_f32(0.1)))),
+        enter_gameplay_screen.run_if(in_state(Screen::Loading).and(all_assets_loaded)),
     );
 }
 

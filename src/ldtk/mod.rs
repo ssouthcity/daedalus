@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
+use crate::assets::LoadResource;
+
 mod fields;
 mod level;
 mod player;
@@ -19,7 +21,26 @@ pub(super) fn plugin(app: &mut App) {
         ..default()
     });
 
+    app.register_type::<LdtkProjectAssets>();
+    app.load_resource::<LdtkProjectAssets>();
+
     app.add_plugins((level::plugin, player::plugin, potion::plugin, wall::plugin));
+}
+
+#[derive(Resource, Asset, Clone, Reflect)]
+#[reflect(Resource)]
+pub struct LdtkProjectAssets {
+    #[dependency]
+    project: Handle<LdtkProject>,
+}
+
+impl FromWorld for LdtkProjectAssets {
+    fn from_world(world: &mut World) -> Self {
+        let asset_server = world.resource::<AssetServer>();
+        Self {
+            project: asset_server.load("stages/maze.ldtk"),
+        }
+    }
 }
 
 pub fn fix_z_coordinate<C: Component>(transforms: Query<&mut Transform, With<C>>) {
@@ -28,11 +49,11 @@ pub fn fix_z_coordinate<C: Component>(transforms: Query<&mut Transform, With<C>>
     }
 }
 
-pub fn spawn_world(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn spawn_world(mut commands: Commands, project_asset: Res<LdtkProjectAssets>) {
     commands.spawn((
         Name::new("Ldtk World"),
         LdtkWorldBundle {
-            ldtk_handle: asset_server.load("stages/maze.ldtk").into(),
+            ldtk_handle: project_asset.project.clone().into(),
             ..default()
         },
     ));

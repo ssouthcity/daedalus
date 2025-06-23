@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+mod assets;
 mod audio;
 mod camera;
 mod collectible;
@@ -23,6 +24,7 @@ pub struct AppPlugin;
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((
+            assets::plugin,
             audio::plugin,
             camera::plugin,
             collectible::plugin,

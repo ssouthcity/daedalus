@@ -11,7 +11,7 @@
 	"iid": "71d56250-3740-11f0-a07e-0993f98258fb",
 	"jsonVersion": "1.5.3",
 	"appBuildId": 473703,
-	"nextUid": 41,
+	"nextUid": 43,
 	"identifierStyle": "Capitalize",
 	"toc": [],
 	"worldLayout": "GridVania",
@@ -670,15 +670,15 @@
 				"averageColors": "f733f745f877f745f878f878f878f789f789f556f656f656f633f755f789f755f878f878f789f678f678f556f545f545f866f755f878f755f78af977fd96f988f999f656f545f545f89af89bf89af789f78af988fda8fb97fb97f655f755f755fea6fea6fd96fd96fd96fea6d678d668a667f789f789f7894fff8fff4ffffa649678b789ca64d977d877c988f987c988fa755964a889fa64c778d778c778d877d877f987c987f987d868b976b975d877c965d988d877f866f977d978f987d978b777b777b866c966c97767675778566666666656776778548497da76e944d866c76467676565684465678777b7678766a854c889d766b854b7675666566557555666674566556655"
 			}
 		}
-	], "enums": [], "externalEnums": [], "levelFields": [
+	], "enums": [{ "identifier": "BackgroundMusicTrack", "uid": 41, "values": [ { "id": "Overworld", "tileRect": { "tilesetUid": 1, "x": 1, "y": 69, "w": 16, "h": 16 }, "color": 14984818 }, { "id": "Inside", "tileRect": { "tilesetUid": 1, "x": 171, "y": 18, "w": 16, "h": 16 }, "color": 2501444 } ], "iconTilesetUid": 1, "externalRelPath": null, "externalFileChecksum": null, "tags": ["audio"] }], "externalEnums": [], "levelFields": [
 		{
-			"identifier": "Background_Music",
+			"identifier": "BackgroundMusicTrack",
 			"doc": null,
-			"__type": "FilePath",
-			"uid": 39,
-			"type": "F_Path",
+			"__type": "LocalEnum.BackgroundMusicTrack",
+			"uid": 42,
+			"type": "F_Enum(41)",
 			"isArray": false,
-			"canBeNull": true,
+			"canBeNull": false,
 			"arrayMinLength": null,
 			"arrayMaxLength": null,
 			"editorDisplayMode": "Hidden",
@@ -697,8 +697,11 @@
 			"min": null,
 			"max": null,
 			"regex": null,
-			"acceptFileTypes": [".ogg"],
-			"defaultOverride": null,
+			"acceptFileTypes": null,
+			"defaultOverride": {
+				"id": "V_String",
+				"params": ["Overworld"]
+			},
 			"textLanguageMode": null,
 			"symmetricalRef": false,
 			"autoChainRef": true,
@@ -729,10 +732,7 @@
 			"__smartColor": "#ADADB5",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "Background_Music", "__type": "FilePath", "__value": "../music/overworld.ogg", "__tile": null, "defUid": 39, "realEditorValues": [{
-				"id": "V_String",
-				"params": ["../music/overworld.ogg"]
-			}] }],
+			"fieldInstances": [{ "__identifier": "BackgroundMusicTrack", "__type": "LocalEnum.BackgroundMusicTrack", "__value": "Overworld", "__tile": null, "defUid": 42, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "More_collectibles",
@@ -1236,9 +1236,9 @@
 			"__smartColor": "#ADADB5",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "Background_Music", "__type": "FilePath", "__value": "../music/inside.ogg", "__tile": null, "defUid": 39, "realEditorValues": [{
+			"fieldInstances": [{ "__identifier": "BackgroundMusicTrack", "__type": "LocalEnum.BackgroundMusicTrack", "__value": "Inside", "__tile": null, "defUid": 42, "realEditorValues": [{
 				"id": "V_String",
-				"params": ["../music/inside.ogg"]
+				"params": ["Inside"]
 			}] }],
 			"layerInstances": [
 				{
@@ -1667,10 +1667,7 @@
 			"__smartColor": "#ADADB5",
 			"__bgPos": null,
 			"externalRelPath": null,
-			"fieldInstances": [{ "__identifier": "Background_Music", "__type": "FilePath", "__value": "../music/overworld.ogg", "__tile": null, "defUid": 39, "realEditorValues": [{
-				"id": "V_String",
-				"params": ["../music/overworld.ogg"]
-			}] }],
+			"fieldInstances": [{ "__identifier": "BackgroundMusicTrack", "__type": "LocalEnum.BackgroundMusicTrack", "__value": "Overworld", "__tile": null, "defUid": 42, "realEditorValues": [] }],
 			"layerInstances": [
 				{
 					"__identifier": "More_collectibles",
