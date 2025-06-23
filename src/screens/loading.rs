@@ -12,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         enter_gameplay_screen
-            .run_if(in_state(Screen::Loading).and(once_after_delay(Duration::from_secs(2)))),
+            .run_if(in_state(Screen::Loading).and(once_after_delay(Duration::from_secs_f32(0.1)))),
     );
 }
 
