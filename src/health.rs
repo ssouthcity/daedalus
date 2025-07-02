@@ -60,11 +60,11 @@ impl Health {
         self.current <= 0
     }
 
-    fn heal(&mut self, amount: i32) {
+    pub fn heal(&mut self, amount: i32) {
         self.current = (self.current + amount).min(self.max);
     }
 
-    fn hurt(&mut self, amount: i32) {
+    pub fn hurt(&mut self, amount: i32) {
         self.current = (self.current - amount).max(0);
     }
 }

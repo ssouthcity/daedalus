@@ -7,7 +7,7 @@ use crate::{camera::CameraTarget, collectible::Collector, health::Health, player
 pub(super) fn plugin(app: &mut App) {
     app.register_ldtk_entity::<PlayerEntity>("Player");
 
-    app.add_systems(Update, process_player);
+    app.add_observer(process_player);
 }
 
 #[derive(Clone, Default, Bundle, LdtkEntity)]
@@ -22,19 +22,18 @@ struct PlayerEntity {
     health: Health,
 }
 
-fn process_player(mut commands: Commands, entity_query: Query<Entity, Added<Player>>) {
-    for entity in entity_query.iter() {
-        commands.entity(entity).insert((
-            RigidBody::Dynamic,
-            LockedAxes::ROTATION_LOCKED,
-            LinearVelocity::ZERO,
-        ));
+fn process_player(trigger: Trigger<OnAdd, Player>, mut commands: Commands) {
+    commands.entity(trigger.target()).insert((
+        RigidBody::Dynamic,
+        LockedAxes::ROTATION_LOCKED,
+        LinearVelocity::ZERO,
+    ));
 
-        commands.spawn((
-            ChildOf(entity),
-            Transform::from_xyz(0.0, -8.0, 0.0),
-            Collider::rectangle(4.0, 4.0),
-            Collector,
-        ));
-    }
+    commands.spawn((
+        Name::new("Collider"),
+        ChildOf(trigger.target()),
+        Transform::from_xyz(0.0, -8.0, 0.0),
+        Collider::rectangle(4.0, 4.0),
+        Collector,
+    ));
 }
