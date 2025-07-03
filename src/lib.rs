@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+mod animation;
 mod assets;
 mod audio;
 mod camera;
@@ -24,14 +25,19 @@ pub struct AppPlugin;
 
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
+        app.add_plugins(default::plugin);
+
         app.add_plugins((
+            animation::plugin,
             assets::plugin,
             audio::plugin,
             camera::plugin,
             collectible::plugin,
-            default::plugin,
             health::plugin,
             hud::plugin,
+        ));
+
+        app.add_plugins((
             input::plugin,
             inventory::plugin,
             ldtk::plugin,

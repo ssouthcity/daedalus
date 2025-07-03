@@ -1,8 +1,10 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_aseprite_ultra::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
+    animation::DespawnOnAnimationFinish,
     assets::LoadResource,
     audio::sound_effect,
     collectible::Collector,
@@ -31,6 +33,8 @@ struct PotionAssets {
     collect_sound: Handle<AudioSource>,
     #[dependency]
     inventory_icon: Handle<Image>,
+    #[dependency]
+    use_animation: Handle<Aseprite>,
 }
 
 impl FromWorld for PotionAssets {
@@ -39,6 +43,7 @@ impl FromWorld for PotionAssets {
         Self {
             collect_sound: asset_server.load("sound_effects/potion_collect.ogg"),
             inventory_icon: asset_server.load("potion-icon.png"),
+            use_animation: asset_server.load("potion-effect.aseprite"),
         }
     }
 }
@@ -98,6 +103,17 @@ fn drink_potion(
     commands.spawn(sound_effect(potion_assets.collect_sound.clone()));
 
     if let Ok(item_of) = items.get(trigger.target()) {
+        commands.spawn((
+            Name::new("Potion VFX"),
+            ChildOf(item_of.0),
+            Sprite::default(),
+            AseAnimation {
+                aseprite: potion_assets.use_animation.clone(),
+                animation: Animation::default().with_repeat(AnimationRepeat::Count(0)),
+            },
+            DespawnOnAnimationFinish,
+        ));
+
         heal_events.write(HealEvent {
             entity: item_of.0,
             amount: HEAL_AMOUNT,
