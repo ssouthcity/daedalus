@@ -1,10 +1,7 @@
 use avian2d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{
-    input::{InteractInput, MovementInput},
-    pause::PauseableSystems,
-};
+use crate::{input::MovementInput, pause::PauseableSystems};
 
 const PLAYER_WALK_SPEED: f32 = 96.0;
 const PLAYER_RUN_SPEED: f32 = 128.0;
@@ -12,10 +9,7 @@ const PLAYER_RUN_SPEED: f32 = 128.0;
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Player>();
 
-    app.add_systems(
-        Update,
-        (player_movement, player_interact).in_set(PauseableSystems),
-    );
+    app.add_systems(Update, player_movement.in_set(PauseableSystems));
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Component, Reflect)]
@@ -34,11 +28,5 @@ fn player_movement(
 
     for mut velocity in query {
         velocity.0 = movement_input.axis * speed;
-    }
-}
-
-fn player_interact(mut events: EventReader<InteractInput>) {
-    for _ in events.read() {
-        println!("interact!");
     }
 }

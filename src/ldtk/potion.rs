@@ -2,7 +2,13 @@ use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::{assets::LoadResource, audio::sound_effect, collectible::Collector, health::HealEvent};
+use crate::{
+    assets::LoadResource,
+    audio::sound_effect,
+    collectible::Collector,
+    health::HealEvent,
+    inventory::{InventoryIcon, ItemOf, OnUseItem},
+};
 
 const HEAL_AMOUNT: i32 = 20;
 
@@ -13,7 +19,8 @@ pub(super) fn plugin(app: &mut App) {
 
     app.register_ldtk_entity::<PotionEntity>("Health_Potion");
 
-    app.add_systems(Update, process_potion);
+    app.add_observer(process_potion);
+
     app.add_systems(Update, super::fix_z_coordinate::<Potion>);
 }
 
@@ -22,6 +29,8 @@ pub(super) fn plugin(app: &mut App) {
 struct PotionAssets {
     #[dependency]
     collect_sound: Handle<AudioSource>,
+    #[dependency]
+    inventory_icon: Handle<Image>,
 }
 
 impl FromWorld for PotionAssets {
@@ -29,6 +38,7 @@ impl FromWorld for PotionAssets {
         let asset_server = world.resource::<AssetServer>();
         Self {
             collect_sound: asset_server.load("sound_effects/potion_collect.ogg"),
+            inventory_icon: asset_server.load("potion-icon.png"),
         }
     }
 }
@@ -40,38 +50,56 @@ struct Potion;
 #[derive(Clone, Default, Debug, Bundle, LdtkEntity)]
 struct PotionEntity {
     potion: Potion,
+
     #[sprite_sheet]
     sprite_sheet: Sprite,
 }
 
-fn process_potion(mut commands: Commands, entity_query: Query<Entity, Added<Potion>>) {
-    for entity in entity_query {
-        commands
-            .entity(entity)
-            .insert((
-                RigidBody::Static,
-                Collider::circle(8.0),
-                Sensor,
-                CollisionEventsEnabled,
-            ))
-            .observe(collect_potion);
-    }
+fn process_potion(trigger: Trigger<OnAdd, Potion>, mut commands: Commands) {
+    commands
+        .entity(trigger.target())
+        .insert((
+            RigidBody::Static,
+            Collider::circle(8.0),
+            Sensor,
+            CollisionEventsEnabled,
+        ))
+        .observe(collect_potion);
 }
 
 fn collect_potion(
     trigger: Trigger<OnCollisionStart>,
     mut commands: Commands,
-    mut heal_events: EventWriter<HealEvent>,
     collectors: Query<&ColliderOf, With<Collector>>,
     potion_assets: Res<PotionAssets>,
 ) {
     if let Ok(collider_of) = collectors.get(trigger.collider) {
         commands.entity(trigger.target()).despawn();
 
-        commands.spawn(sound_effect(potion_assets.collect_sound.clone()));
+        commands
+            .spawn((
+                Name::new("Health Potion"),
+                ItemOf(collider_of.body),
+                InventoryIcon(potion_assets.inventory_icon.clone()),
+            ))
+            .observe(drink_potion);
+    }
+}
 
+fn drink_potion(
+    trigger: Trigger<OnUseItem>,
+    mut commands: Commands,
+    mut heal_events: EventWriter<HealEvent>,
+    potion_assets: Res<PotionAssets>,
+    items: Query<&ItemOf>,
+) {
+    commands.entity(trigger.target()).despawn();
+
+    commands.spawn(sound_effect(potion_assets.collect_sound.clone()));
+
+    if let Ok(item_of) = items.get(trigger.target()) {
         heal_events.write(HealEvent {
-            entity: collider_of.body,
+            entity: item_of.0,
             amount: HEAL_AMOUNT,
         });
     }

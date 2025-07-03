@@ -10,6 +10,7 @@ mod dev_tools;
 mod health;
 mod hud;
 mod input;
+mod inventory;
 mod ldtk;
 mod menus;
 mod pause;
@@ -32,6 +33,7 @@ impl Plugin for AppPlugin {
             health::plugin,
             hud::plugin,
             input::plugin,
+            inventory::plugin,
             ldtk::plugin,
             menus::plugin,
             pause::plugin,
