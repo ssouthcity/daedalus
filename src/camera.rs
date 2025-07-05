@@ -15,7 +15,7 @@ fn setup_main_camera(mut commands: Commands) {
         Name::new("Camera"),
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
-            scale: 0.5,
+            scale: 0.25,
             ..OrthographicProjection::default_2d()
         }),
     ));
