@@ -1,8 +1,6 @@
-use std::time::Duration;
+use bevy::prelude::*;
 
-use bevy::{prelude::*, time::common_conditions::on_timer};
-
-use crate::{health::Health, input::InteractInput, player::Player};
+use crate::{input::InteractInput, player::Player};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Inventory>();
@@ -12,16 +10,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_event::<OnUseItem>();
 
     app.add_systems(Update, use_item.run_if(on_event::<InteractInput>));
-
-    app.add_systems(
-        Update,
-        (|query: Query<&mut Health>| {
-            for mut hp in query {
-                hp.hurt(1);
-            }
-        })
-        .run_if(on_timer(Duration::from_secs(1))),
-    );
 }
 
 #[derive(Component, Reflect)]

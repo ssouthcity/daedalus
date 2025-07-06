@@ -8,7 +8,7 @@ use crate::{
     assets::LoadResource,
     audio::sound_effect,
     collectible::Collector,
-    health::HealEvent,
+    health::Heal,
     inventory::{InventoryIcon, ItemOf, OnUseItem},
 };
 
@@ -94,7 +94,6 @@ fn collect_potion(
 fn drink_potion(
     trigger: Trigger<OnUseItem>,
     mut commands: Commands,
-    mut heal_events: EventWriter<HealEvent>,
     potion_assets: Res<PotionAssets>,
     items: Query<&ItemOf>,
 ) {
@@ -114,9 +113,6 @@ fn drink_potion(
             DespawnOnAnimationFinish,
         ));
 
-        heal_events.write(HealEvent {
-            entity: item_of.0,
-            amount: HEAL_AMOUNT,
-        });
+        commands.trigger_targets(Heal(HEAL_AMOUNT), item_of.0);
     }
 }

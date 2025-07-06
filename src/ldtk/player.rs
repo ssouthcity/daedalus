@@ -1,10 +1,13 @@
 use avian2d::prelude::*;
-use bevy::prelude::*;
+use bevy::{input::common_conditions::input_just_pressed, prelude::*};
 use bevy_aseprite_ultra::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
 use crate::{
-    assets::LoadResource, camera::CameraTarget, collectible::Collector, health::Health,
+    assets::LoadResource,
+    camera::CameraTarget,
+    collectible::Collector,
+    health::{Death, Health, Hurt},
     player::Player,
 };
 
@@ -16,6 +19,14 @@ pub(super) fn plugin(app: &mut App) {
     app.add_observer(process_player);
 
     app.add_systems(Update, update_player_animation);
+
+    app.add_systems(
+        Update,
+        (|mut commands: Commands, players: Query<Entity, With<Player>>| {
+            commands.trigger_targets(Hurt(10), players.iter().collect::<Vec<Entity>>());
+        })
+        .run_if(input_just_pressed(KeyCode::KeyH)),
+    );
 }
 
 #[derive(Asset, Resource, Reflect, Clone)]
@@ -62,7 +73,8 @@ fn process_player(
             RigidBody::Dynamic,
             LockedAxes::ROTATION_LOCKED,
             LinearVelocity::ZERO,
-        ));
+        ))
+        .observe(end_game_on_player_death);
 
     commands.spawn((
         Name::new("Collider"),
@@ -85,4 +97,8 @@ fn update_player_animation(
     if player.2.x.abs() > 0.0 {
         player.1.flip_x = player.2.x.is_sign_negative();
     }
+}
+
+fn end_game_on_player_death(_trigger: Trigger<Death>, mut app_exit_events: EventWriter<AppExit>) {
+    app_exit_events.write(AppExit::Success);
 }
