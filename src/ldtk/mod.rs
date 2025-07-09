@@ -5,6 +5,7 @@ use crate::assets::LoadResource;
 
 mod fields;
 mod level;
+mod ogre;
 mod player;
 mod potion;
 mod wall;
@@ -24,7 +25,13 @@ pub(super) fn plugin(app: &mut App) {
     app.register_type::<LdtkProjectAssets>();
     app.load_resource::<LdtkProjectAssets>();
 
-    app.add_plugins((level::plugin, player::plugin, potion::plugin, wall::plugin));
+    app.add_plugins((
+        level::plugin,
+        ogre::plugin,
+        player::plugin,
+        potion::plugin,
+        wall::plugin,
+    ));
 }
 
 #[derive(Resource, Asset, Clone, Reflect)]

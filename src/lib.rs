@@ -14,6 +14,7 @@ mod input;
 mod inventory;
 mod ldtk;
 mod menus;
+mod patrol;
 mod pause;
 mod physics;
 mod player;
@@ -42,6 +43,7 @@ impl Plugin for AppPlugin {
             inventory::plugin,
             ldtk::plugin,
             menus::plugin,
+            patrol::plugin,
             pause::plugin,
             physics::plugin,
             player::plugin,
