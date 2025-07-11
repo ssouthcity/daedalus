@@ -1,3 +1,5 @@
+use crate::gameplay::behavior::health::Health;
+use crate::gameplay::behavior::patrol::Patrol;
 use avian2d::prelude::*;
 use bevy::{
     ecs::{component::HookContext, world::DeferredWorld},
@@ -6,7 +8,7 @@ use bevy::{
 use bevy_aseprite_ultra::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::{assets::LoadResource, health::Health, patrol::Patrol};
+use crate::assets::LoadResource;
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<OgreAssets>();

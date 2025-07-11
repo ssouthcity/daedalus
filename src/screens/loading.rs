@@ -1,5 +1,5 @@
 use crate::assets::common_conditions::all_assets_loaded;
-use crate::prelude::*;
+use crate::theme::widgets;
 use bevy::prelude::*;
 
 use super::Screen;

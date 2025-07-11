@@ -3,12 +3,11 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::assets::LoadResource;
 
-mod fields;
+mod actors;
+mod behavior;
+mod hud;
 mod level;
-mod ogre;
-mod player;
-mod potion;
-mod wall;
+mod movement;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(LdtkPlugin::default());
@@ -26,11 +25,11 @@ pub(super) fn plugin(app: &mut App) {
     app.load_resource::<LdtkProjectAssets>();
 
     app.add_plugins((
+        actors::plugin,
+        behavior::plugin,
+        hud::plugin,
         level::plugin,
-        ogre::plugin,
-        player::plugin,
-        potion::plugin,
-        wall::plugin,
+        movement::plugin,
     ));
 }
 
@@ -47,12 +46,6 @@ impl FromWorld for LdtkProjectAssets {
         Self {
             project: asset_server.load("stages/maze.ldtk"),
         }
-    }
-}
-
-pub fn fix_z_coordinate<C: Component>(transforms: Query<&mut Transform, With<C>>) {
-    for mut transform in transforms {
-        transform.translation.z = 0.0;
     }
 }
 

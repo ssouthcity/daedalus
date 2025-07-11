@@ -1,11 +1,21 @@
 use avian2d::prelude::{PhysicsDebugPlugin, PhysicsGizmos};
-use bevy::{input::common_conditions::input_just_pressed, prelude::*, ui::UiDebugOptions};
+use bevy::{
+    diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin},
+    input::common_conditions::input_just_pressed,
+    prelude::*,
+    ui::UiDebugOptions,
+};
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 const TOGGLE_KEY: KeyCode = KeyCode::Backquote;
 
 pub(super) fn plugin(app: &mut App) {
+    app.add_plugins((
+        LogDiagnosticsPlugin::default(),
+        FrameTimeDiagnosticsPlugin::default(),
+    ));
+
     app.add_plugins((
         EguiPlugin {
             enable_multipass_for_primary_context: true,

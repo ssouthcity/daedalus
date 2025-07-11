@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::pause::Paused;
 use avian2d::prelude::*;
 use bevy::prelude::*;
 

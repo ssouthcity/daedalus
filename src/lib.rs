@@ -4,21 +4,13 @@ mod animation;
 mod assets;
 mod audio;
 mod camera;
-mod collectible;
-mod debug;
 mod default;
 mod dev_tools;
-mod health;
-mod hud;
+mod gameplay;
 mod input;
-mod inventory;
-mod ldtk;
 mod menus;
-mod patrol;
 mod pause;
 mod physics;
-mod player;
-mod prelude;
 mod screens;
 mod theme;
 
@@ -33,24 +25,15 @@ impl Plugin for AppPlugin {
             assets::plugin,
             audio::plugin,
             camera::plugin,
-            collectible::plugin,
-            health::plugin,
-            hud::plugin,
-        ));
-
-        app.add_plugins((
+            gameplay::plugin,
             input::plugin,
-            inventory::plugin,
-            ldtk::plugin,
             menus::plugin,
-            patrol::plugin,
             pause::plugin,
             physics::plugin,
-            player::plugin,
             screens::plugin,
         ));
 
         #[cfg(feature = "dev")]
-        app.add_plugins((debug::plugin, dev_tools::plugin));
+        app.add_plugins(dev_tools::plugin);
     }
 }

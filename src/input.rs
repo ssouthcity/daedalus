@@ -1,5 +1,6 @@
-use crate::prelude::*;
 use bevy::prelude::*;
+
+use crate::pause::PauseableSystems;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(InputDevice::default());
