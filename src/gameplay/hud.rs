@@ -1,10 +1,15 @@
-use crate::{
-    inventory::{InventoryIcon, ItemOf},
-    prelude::*,
-};
 use bevy::prelude::*;
 
-use crate::{health::Health, player};
+use crate::{
+    gameplay::{
+        behavior::{
+            health::Health,
+            inventory::{InventoryIcon, ItemOf},
+        },
+        movement::Player,
+    },
+    pause::PauseableSystems,
+};
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(Startup, setup_hud_system);
@@ -51,7 +56,7 @@ fn setup_hud_system(mut commands: Commands) {
 
 fn update_hp_system(
     mut hud_hp_text: Single<&mut Text, With<HudHPText>>,
-    hp: Single<&Health, With<player::Player>>,
+    hp: Single<&Health, With<Player>>,
 ) {
     hud_hp_text.0 = hp.amount().to_string();
 }

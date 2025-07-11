@@ -1,7 +1,8 @@
 use std::collections::VecDeque;
 
-use avian2d::prelude::LinearVelocity;
+use avian2d::prelude::*;
 use bevy::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
 
 // how close the entity can be to the patrol point before it is considered as reached
 const PATROL_GOAL_EPSILON: f32 = 2.0;
@@ -46,6 +47,20 @@ impl Patrol {
         };
 
         self.push_back(front);
+    }
+}
+
+impl From<&EntityInstance> for Patrol {
+    fn from(value: &EntityInstance) -> Self {
+        let points: VecDeque<Vec2> = value
+            .iter_points_field("Patrol")
+            .expect("expected entity to have a non-nullable patrol points field")
+            .chain(std::iter::once(&value.grid))
+            .map(|point| IVec2::new(point.x, 15 - point.y))
+            .map(|point| point.as_vec2() * 16.0)
+            .collect();
+
+        Self::new(points)
     }
 }
 

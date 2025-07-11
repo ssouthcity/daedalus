@@ -7,9 +7,11 @@ use crate::{
     animation::DespawnOnAnimationFinish,
     assets::LoadResource,
     audio::sound_effect,
-    collectible::Collector,
-    health::Heal,
-    inventory::{InventoryIcon, ItemOf, OnUseItem},
+    gameplay::behavior::{
+        collectible::Collector,
+        health::Heal,
+        inventory::{InventoryIcon, ItemOf, OnUseItem},
+    },
 };
 
 const HEAL_AMOUNT: i32 = 20;

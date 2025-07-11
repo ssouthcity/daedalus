@@ -26,6 +26,7 @@
 
   languages.rust = {
     enable = true;
+    mold.enable = true;
   };
 
   env.LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [

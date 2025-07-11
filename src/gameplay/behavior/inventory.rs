@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{input::InteractInput, player::Player};
+use crate::{gameplay::movement::Player, input::InteractInput};
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<Inventory>();

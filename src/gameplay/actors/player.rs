@@ -6,9 +6,13 @@ use bevy_ecs_ldtk::prelude::*;
 use crate::{
     assets::LoadResource,
     camera::CameraTarget,
-    collectible::Collector,
-    health::{Death, Health, Hurt},
-    player::Player,
+    gameplay::{
+        behavior::{
+            collectible::Collector,
+            health::{Death, Health, Hurt},
+        },
+        movement::Player,
+    },
 };
 
 pub(super) fn plugin(app: &mut App) {

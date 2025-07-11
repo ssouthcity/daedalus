@@ -1,5 +1,6 @@
-use crate::{assets::LoadResource, prelude::*};
+use crate::{assets::LoadResource, pause::PauseableSystems};
 use bevy::{prelude::*, sprite::Anchor};
+use bevy_ecs_ldtk::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.load_resource::<HealthAssets>();
@@ -124,6 +125,16 @@ impl Health {
 
     pub fn hurt(&mut self, amount: i32) {
         self.current = (self.current - amount).max(0);
+    }
+}
+
+impl From<&EntityInstance> for Health {
+    fn from(entity_instance: &EntityInstance) -> Self {
+        let amount = *entity_instance
+            .get_int_field("Health")
+            .expect("expected entity to have a non-nullable health int field");
+
+        Self::new(amount)
     }
 }
 
